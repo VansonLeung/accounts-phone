@@ -673,7 +673,9 @@ var normalizePhone = function (phone) {
     if (phone && Accounts._options.adminPhoneNumbers && Accounts._options.adminPhoneNumbers.indexOf(phone) != -1) {
         return phone;
     }
-    return Phone(phone)[0];
+    var _phone = Phone(phone)[0];
+    if (_phone) return _phone;
+    return phone;
 };
 
 /**
