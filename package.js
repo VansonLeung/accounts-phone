@@ -1,5 +1,6 @@
 Package.describe({
     name         : 'vansonhk:accounts-phone',
+    name         : 'okland:accounts-phone',
     version      : '0.0.22',
     // Brief, one-line summary of the package.
     summary      : 'A login service based on mobile phone number, For Meteor.',
@@ -17,7 +18,7 @@ Npm.depends({
 });
 
 Package.onUse(function (api) {
-    api.use('npm-bcrypt@=0.7.8_2', 'server');
+    api.use('npm-bcrypt@=0.8.5', 'server');
 
     api.use('accounts-base@1.0.2', ['client', 'server']);
     // Export Accounts (etc) to packages using this one.

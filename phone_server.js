@@ -152,12 +152,12 @@ var passwordValidator = Match.OneOf(
 // Note that neither password option is secure without SSL.
 //
 Accounts.registerLoginHandler("phone", function (options) {
-    if (!options.password || options.srp)
+    if (!options.passwordEx || options.srp)
         return undefined; // don't handle
 
     check(options, {
         user    : userQueryValidator,
-        password: passwordValidator
+        passwordEx: passwordValidator
     });
 
     var user = findUserFromUserQuery(options.user);
@@ -166,13 +166,13 @@ Accounts.registerLoginHandler("phone", function (options) {
         throw new Meteor.Error(403, "User has no password set");
 
     if (!user.services.phone.bcrypt) {
-        if (typeof options.password === "string") {
+        if (typeof options.passwordEx === "string") {
             // The client has presented a plaintext password, and the user is
             // not upgraded to bcrypt yet. We don't attempt to tell the client
             // to upgrade to bcrypt, because it might be a standalone DDP
             // client doesn't know how to do such a thing.
             var verifier = user.services.phone.srp;
-            var newVerifier = SRP.generateVerifier(options.password, {
+            var newVerifier = SRP.generateVerifier(options.passwordEx, {
                 identity: verifier.identity, salt: verifier.salt});
 
             if (verifier.verifier !== newVerifier.verifier) {
@@ -194,7 +194,7 @@ Accounts.registerLoginHandler("phone", function (options) {
 
     return checkPassword(
         user,
-        options.password
+        options.passwordEx
     );
 });
 
@@ -214,7 +214,7 @@ Accounts.registerLoginHandler("phone", function (options) {
 //
 // XXX COMPAT WITH 0.8.1.3
 Accounts.registerLoginHandler("phone", function (options) {
-    if (!options.srp || !options.password)
+    if (!options.srp || !options.passwordEx)
         return undefined; // don't handle
 
     check(options, {
@@ -229,7 +229,7 @@ Accounts.registerLoginHandler("phone", function (options) {
     // the user record to bcrypt.
     if (user.services && user.services.phone &&
         user.services.phone.bcrypt)
-        return checkPassword(user, options.password);
+        return checkPassword(user, options.passwordEx);
 
     if (!(user.services && user.services.phone
         && user.services.phone.srp))
@@ -250,7 +250,7 @@ Accounts.registerLoginHandler("phone", function (options) {
         };
 
     // Upgrade to bcrypt on successful login.
-    var salted = hashPassword(options.password);
+    var salted = hashPassword(options.passwordEx);
     Meteor.users.update(
         user._id,
         {
@@ -519,8 +519,8 @@ var createUser = function (options) {
     }
 
     var user = {services: {}};
-    if (options.password) {
-        var hashed = hashPassword(options.password);
+    if (options.passwordEx) {
+        var hashed = hashPassword(options.passwordEx);
         user.services.phone = { bcrypt: hashed };
     }
 

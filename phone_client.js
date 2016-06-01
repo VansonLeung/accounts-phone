@@ -23,7 +23,7 @@ Meteor.loginWithPhoneAndPassword = function (selector, password, callback) {
         methodArguments: [
             {
                 user    : selector,
-                password: Accounts._hashPassword(password)
+                passwordEx: Accounts._hashPassword(password)
             }
         ],
         userCallback   : function (error, result) {

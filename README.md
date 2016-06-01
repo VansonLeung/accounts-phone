@@ -1,4 +1,4 @@
-Accounts-Phone
+Forked Accounts-Phone
 =========================
 
 Accounts-Phone is a Meteor package that let you authenticate by phone number.
